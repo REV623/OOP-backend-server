@@ -12,5 +12,7 @@ public class Gameserver {
         Server = new HashMap<>();
     }
 
-
+    public Territory newGame(String host){
+        return null;
+    }
 }
