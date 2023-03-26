@@ -3,10 +3,7 @@ package com.example.OOPserver;
 import lombok.Getter;
 
 @Getter
-public class HostMessage {
+public class JoinMessage {
     private String user;
     private String host;
-    private String m;
-    private String n;
-    private String num_player;
 }
