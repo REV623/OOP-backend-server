@@ -12,10 +12,12 @@ import java.util.HashSet;
 public class Gameserver {
     private HashMap<String,Territory> Server;
     private HashMap<String, ArrayList<String>> Room;
+    private HashMap<String, Long[]> Config;
 
     public Gameserver(){
         Server = new HashMap<>();
         Room = new HashMap<>();
+        Config = new HashMap<>();
     }
 
     public HashMap<String, Territory> getServer() {
@@ -24,6 +26,10 @@ public class Gameserver {
 
     public HashMap<String, ArrayList<String>> getRoom() {
         return Room;
+    }
+
+    public HashMap<String, Long[]> getConfig() {
+        return Config;
     }
 
     public Territory newGame(String host){
