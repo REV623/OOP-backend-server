@@ -5,26 +5,81 @@ import { Client } from "@stomp/stompjs"
 import JoinGame from "./JoinGame";
 import HostGame from "./HostGame";
 import WaitRoom from "./WaitRoom";
+import UPBEAT from "./UPBEAT";
 
 const url = "ws://192.168.1.109:8080/upbeat-websocket";
 let client;
 let username;
+let numPlayer;
+let host;
 
 export default function exp() {
   const [gameState,setGameState] = useState(0);
   const [gameRoom,setGameRoom] = useState(0);
+  const [count, setCount] = useState(0);
 
   function topicMesage(message){
     const body = JSON.parse(message.body);
 
   }
 
+  function sendWait(){
+    if (client) {
+      if (client.connected) {
+        client.publish({
+          destination: "/app/wait",
+          body: JSON.stringify({
+            user: username,
+            host: host,
+            isClick: false,
+          }),
+        });
+      }
+    }
+  }
+
   function handleHost(body){
     if(body[0] === username){
       if(body[2] === "false"){
-        console.log("app1");
+        console.log("host1");
+        host = body[1];
+        numPlayer = body[3];
+        setGameState(3);
+        sendWait();
       }else{
-        console.log("app2");
+        alert("Room name is duplicate!");
+        console.log("host2");
+      }
+    }
+  }
+
+  function handleJoin(body){
+    if(body[0] === username){
+      if(body[2] === "true"){
+        if(body[3] === "false"){
+          alert("Room is full!");
+        }else{
+          console.log("join1");
+          host = body[1];
+          numPlayer = body[3];
+          setGameState(3);
+          sendWait();
+        }
+      }else{
+        alert("Room name not found!");
+        console.log("join2");
+      }
+    }
+  }
+
+  function handleWait(body){
+    if(body[1] === host){
+      if(body[2] === "true"){
+        console.log("wait1");
+        setGameState(4);
+      }else{
+        console.log("wait2");
+        setCount(body[2]);
         setGameState(3);
       }
     }
@@ -41,7 +96,8 @@ export default function exp() {
           });
           client.subscribe("/topic/join", (message) => {
             console.log(message.body);
-            topicMesage(message);
+            const body = JSON.parse(message.body);
+            handleJoin(body);
           });
           client.subscribe("/topic/host", (message) => {
             console.log(message.body);
@@ -50,6 +106,11 @@ export default function exp() {
           });
           client.subscribe("/topic/game", (message) => {
             console.log(message.body);
+          });
+          client.subscribe("/topic/wait", (message) => {
+            console.log(message.body);
+            const body = JSON.parse(message.body);
+            handleWait(body);
           });
         },
       });
@@ -94,12 +155,12 @@ export default function exp() {
       </div>
     );
   }else if(gameState === 1){
-    return (<div><JoinGame user={client} username={username}  setState={() => setGameState(3)}></JoinGame></div>)
+    return (<div><JoinGame user={client} username={username}></JoinGame></div>)
   }else if(gameState === 2){
-    return (<div><HostGame user={client} username={username} setState={() => setGameState(3)}></HostGame></div>)
+    return (<div><HostGame user={client} username={username}></HostGame></div>)
   }else if(gameState === 3){
-    return (<div><WaitRoom user={client} username={username} room={gameRoom} setState={() => setGameState(4)}></WaitRoom></div>)
+    return (<div><WaitRoom user={client} username={username} amountPlayer={count} numPlayer={numPlayer}></WaitRoom></div>)
   }else if(gameState === 4){
-
+    return (<div><UPBEAT></UPBEAT></div>)
   }
 }

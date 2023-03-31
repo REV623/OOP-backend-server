@@ -25,7 +25,7 @@ export default function UPBEAT() {
     return () => clearTimeout(timeoutId); // clear timeout when component is unmounted
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!client) {
       client = new Client({
         brokerURL: url,
@@ -37,7 +37,7 @@ export default function UPBEAT() {
 
       client.activate();
     }
-  }, []);
+  }, []);*/
 
   function handleText(event) {
     setContent(event.target.value);

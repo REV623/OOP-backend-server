@@ -4,8 +4,10 @@ import { useParams } from "react-router-dom";
 export default function WaitRoom(props) {
   //const [Row, setSelectedRow] = useState("");
   //const [Column, setSelectedColumn] = useState("");
-  const [Player, setSelectedPlayer] = useState("");
   const [count, setCount] = useState(1);
+
+  let numPlayer = props.numPlayer;
+  let amountPlayer = props.amountPlayer;
 
   const handleClick = () => {
     setCount(count + 1);
@@ -49,7 +51,7 @@ export default function WaitRoom(props) {
           }}
         >
           <strong>
-            {count} / {Player}
+            {amountPlayer} / {numPlayer}
           </strong>
         </span>
         <button 

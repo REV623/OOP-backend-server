@@ -128,7 +128,6 @@ export default function HostGame(props) {
             interest_pct: IR,
           }),
         });
-        props.setState();
       }
     }
   };

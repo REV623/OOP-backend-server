@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 export default function JoinGame(props) {
   const [Name, setName] = useState("");
-  const [IP, setIP] = useState("");
+  const [Host, setHost] = useState("");
 
   let client = props.user;
 
@@ -46,8 +46,8 @@ export default function JoinGame(props) {
     setName(event.target.value);
   }
 
-  function handleIP(event) {
-    setIP(event.target.value);
+  function handleHost(event) {
+    setHost(event.target.value);
   }
 
   const setConfig = () => {
@@ -56,11 +56,11 @@ export default function JoinGame(props) {
         client.publish({
           destination: "/app/join",
           body: JSON.stringify({
-            user: Name,
-            host: IP,
+            user: props.username,
+            username: Name,
+            host: Host,
           }),
         });
-        props.setState();
       }
     }
   };
@@ -135,7 +135,7 @@ export default function JoinGame(props) {
                   Local-Host
                 </h4>
                 <input
-                  onChange={handleIP}
+                  onChange={handleHost}
                   style={{
                     width: "200px",
                     marginLeft: "5px",
