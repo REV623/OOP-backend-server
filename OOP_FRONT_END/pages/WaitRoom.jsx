@@ -4,13 +4,34 @@ import { useParams } from "react-router-dom";
 export default function WaitRoom(props) {
   //const [Row, setSelectedRow] = useState("");
   //const [Column, setSelectedColumn] = useState("");
-  const [count, setCount] = useState(1);
 
   let numPlayer = props.numPlayer;
   let amountPlayer = props.amountPlayer;
+  let client = props.user;
 
   const handleClick = () => {
-    setCount(count + 1);
+    if (client) {
+      if (client.connected) {
+        if(numPlayer === amountPlayer){
+          client.publish({
+            destination: "/app/wait",
+            body: JSON.stringify({
+              user: props.username,
+              host: props.host,
+              isClick: "true",
+            }),
+          });
+          client.publish({
+            destination: "/app/game/new",
+            body: JSON.stringify({
+              user: props.username,
+              host: props.host,
+              isClick: "true",
+            }),
+          });
+        }
+      }
+    }
   };
 
   /*useEffect(() => {
@@ -62,6 +83,7 @@ export default function WaitRoom(props) {
             background: "#fcad03",
           }}
           onClick={handleClick}
+          disabled={numPlayer === amountPlayer ? false : true}
         >
           START GAME
         </button>

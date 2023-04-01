@@ -18,11 +18,6 @@ export default function exp() {
   const [gameRoom,setGameRoom] = useState(0);
   const [count, setCount] = useState(0);
 
-  function topicMesage(message){
-    const body = JSON.parse(message.body);
-
-  }
-
   function sendWait(){
     if (client) {
       if (client.connected) {
@@ -31,10 +26,16 @@ export default function exp() {
           body: JSON.stringify({
             user: username,
             host: host,
-            isClick: false,
+            isClick: "false",
           }),
         });
       }
+    }
+  }
+
+  function handleGame(body){
+    if(body[0][0] === host){
+      console.log("game1");
     }
   }
 
@@ -87,25 +88,25 @@ export default function exp() {
 
   useEffect(() => {
     if (!client) {
-      username = "#"+Math.floor(Math.random()*16777215).toString(16);
+      username = Math.floor(Math.random()*16777215).toString(16)+Math.floor(Math.random()*16777215).toString(16);
+      console.log(username);
       client = new Client({
         brokerURL: url,
         onConnect: () => {
-          client.subscribe("/app/game", (message) => {
-            console.log(message.body+"app");
-          });
-          client.subscribe("/topic/join", (message) => {
+          client.subscribe("/topic/game", (message) => {
             console.log(message.body);
             const body = JSON.parse(message.body);
-            handleJoin(body);
+            handleGame(body);
           });
           client.subscribe("/topic/host", (message) => {
             console.log(message.body);
             const body = JSON.parse(message.body);
             handleHost(body);
           });
-          client.subscribe("/topic/game", (message) => {
+          client.subscribe("/topic/join", (message) => {
             console.log(message.body);
+            const body = JSON.parse(message.body);
+            handleJoin(body);
           });
           client.subscribe("/topic/wait", (message) => {
             console.log(message.body);
@@ -159,7 +160,7 @@ export default function exp() {
   }else if(gameState === 2){
     return (<div><HostGame user={client} username={username}></HostGame></div>)
   }else if(gameState === 3){
-    return (<div><WaitRoom user={client} username={username} amountPlayer={count} numPlayer={numPlayer}></WaitRoom></div>)
+    return (<div><WaitRoom user={client} username={username} host={host} amountPlayer={count} numPlayer={numPlayer}></WaitRoom></div>)
   }else if(gameState === 4){
     return (<div><UPBEAT></UPBEAT></div>)
   }

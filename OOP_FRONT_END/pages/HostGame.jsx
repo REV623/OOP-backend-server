@@ -25,20 +25,6 @@ export default function HostGame(props) {
   
   let client = props.user;
 
-  /*useEffect(() => {
-    if (!client) {
-      client = new Client({
-        brokerURL: url,
-        onConnect: () => {
-          client.subscribe("/app/game");
-          client.subscribe("/topic/game");
-        },
-      });
-
-      client.activate();
-    }
-  }, []);*/
-
   function handleName(event) {
     setName(event.target.value);
   }

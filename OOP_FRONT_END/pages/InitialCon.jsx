@@ -18,18 +18,6 @@ export default function InitialCon() {
   const [content, setContent] = useState("");
   const [Text, setText] = useState([]);
 
-  useEffect(() => {
-    if (!client) {
-      client = new Client({
-        brokerURL: url,
-        onConnect: () => {
-          client.subscribe("/app/game");
-          client.subscribe("/topic/game");
-        },
-      });
-
-      client.activate();
-    }
     // async function loadEditor() {
     //   const [AceEditor, modeJava, themeEclipse, extLanguageTools] = await Promise.all([
     //     import("react-ace"),
@@ -42,7 +30,6 @@ export default function InitialCon() {
     // }
 
     // loadEditor();
-  }, []);
   // // useEffect(() => {
   // //   const searchParams = new URLSearchParams(window.location.search);
   // //   setSelectedRow(searchParams.get("Row"));
