@@ -31,6 +31,7 @@ public class Player {
         this.territory = territory;
         this.cityCrew = this.cityCenter = cityCenter;
         this.cityCenter.owner = this;
+        this.regionSet.add(cityCenter);
         LinkedList<Statement> done = new LinkedList<>();
         done.add(new ActionCommand(Command.done));
         this.construction_Plan = new Plan(done);

@@ -30,6 +30,7 @@ public class RegionCommand implements Statement {
             double cost = this.expression.eval(player);
             if(player.getBudget() < cost) return true;
             player.cityCrew.owner = player;
+            player.regionSet.add(player.cityCrew);
             player.cityCrew.addDeposit(cost);
             player.subBudget(cost);
         }else{ // collect command

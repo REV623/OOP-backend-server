@@ -3,12 +3,14 @@ package com.example.OOPserver.GameState;
 import com.example.OOPserver.AST.ENUM.Direction;
 
 public class Region extends Territory {
+    private Territory territory;
     private int row,col;
     public Player owner = null;
     public Region up = null, upright = null, downright = null, down = null, downleft = null, upleft = null;
-    private double deposit;
+    private double deposit = 0;
 
-    public Region(int x, int y) {
+    public Region(Territory territory, int x, int y) {
+        this.territory = territory;
         this.row = x;
         this.col = y;
     }
@@ -18,7 +20,7 @@ public class Region extends Territory {
     }
 
     public void addDeposit(double n){
-        deposit = Math.min(super.MAX_DEPOSIT(),deposit+n);
+        deposit = Math.min(territory.MAX_DEPOSIT(),deposit+n);
     }
 
     public void subDeposit(double n){
@@ -34,7 +36,7 @@ public class Region extends Territory {
     }
 
     public double getInterestRate(){
-        return super.baseInterestRate*Math.log10(deposit)*Math.log(super.turn);
+        return territory.baseInterestRate()*Math.log10(deposit)*Math.log(territory.turn);
     }
 
     public Region gotoDirection(Direction dir){
@@ -56,7 +58,7 @@ public class Region extends Territory {
     public void calculateInterest(){
         if(owner != null){
             deposit += deposit*this.getInterestRate()/100;
-            if(deposit > super.MAX_DEPOSIT()) deposit = super.MAX_DEPOSIT();
+            if(deposit > territory.MAX_DEPOSIT()) deposit = territory.MAX_DEPOSIT();
         }
     }
 }

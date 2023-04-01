@@ -6,5 +6,5 @@ import lombok.Getter;
 public class WaitMessage {
     private String user;
     private String host;
-    private boolean isClick;
+    private String isClick;
 }

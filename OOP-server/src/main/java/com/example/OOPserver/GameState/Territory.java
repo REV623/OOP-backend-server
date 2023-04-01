@@ -6,9 +6,13 @@ public class Territory {
     private long FEE_CHARGE = 1;
     private int TERRITORY_ROW = 1;
     private int TERRITORY_COL = 1;
+    private long INIT_PLAN_MIN;
+    private long INIT_PLAN_SEC;
+    private long PLAN_REV_MIN;
+    private long PLAN_REV_SEC;
     private long REVISION_COST;
     private long MAX_DEPOSIT;
-    protected double baseInterestRate;
+    private double baseInterestRate;
     protected int turn = 1;
     private int playerTurn = 0;
     public Region[][] territory;
@@ -16,16 +20,22 @@ public class Territory {
 
     public Territory() {}
 
-    public Territory(String[] players, int m, int n, long init_budget, long init_center_dep, long rev_cost, long interest_pct, long max_dep){
-        TERRITORY_ROW = m;
-        TERRITORY_COL = n;
+    public Territory(String[] players, long m, long n, long init_plan_min, long init_plan_sec,
+                     long init_budget, long init_center_dep, long plan_rev_min, long plan_rev_sec,
+                     long rev_cost, long max_dep, long interest_pct){
+        TERRITORY_ROW = (int) m;
+        TERRITORY_COL = (int) n;
+        INIT_PLAN_MIN = init_plan_min;
+        INIT_PLAN_SEC = init_plan_sec;
+        PLAN_REV_MIN = plan_rev_min;
+        PLAN_REV_SEC = plan_rev_sec;
         REVISION_COST = rev_cost;
         MAX_DEPOSIT = max_dep;
         baseInterestRate = interest_pct;
-        territory = new Region[m][n];
+        territory = new Region[TERRITORY_ROW][TERRITORY_COL];
         for (int i=1 ; i<=m ; i++){
             for (int j=1 ; j<=n ; j++){
-                territory[i-1][j-1] = new Region(i,j);
+                territory[i-1][j-1] = new Region(this,i,j);
             }
         }
         for (int i=1 ; i<=m ; i++){
@@ -47,8 +57,8 @@ public class Territory {
                 }
             }
         }
+        this.playerSet = new Player[players.length];
         for(int i = 0 ; i < players.length ; i++){
-            this.playerSet = new Player[players.length];
             Region cityCenterRandom;
             while(true){
                 int row = new Random().nextInt(TERRITORY_ROW);
@@ -91,5 +101,9 @@ public class Territory {
 
     public long MAX_DEPOSIT(){
         return MAX_DEPOSIT;
+    }
+
+    public double baseInterestRate(){
+        return baseInterestRate;
     }
 }

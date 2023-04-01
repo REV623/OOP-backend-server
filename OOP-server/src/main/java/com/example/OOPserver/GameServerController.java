@@ -24,13 +24,20 @@ public class GameServerController {
         return "hello";
     }
 
+    @MessageMapping("/game/new")
+    @SendTo("/topic/game")
+    public String[][] newGame(WaitMessage waitMessage){
+        gameserver.newGame(waitMessage.getHost());
+        return gameserver.getGameData(waitMessage.getHost());
+    }
+
     @MessageMapping("/wait")
     @SendTo("/topic/wait")
     public String[] wait(WaitMessage waitMessage){
         String[] roomMessage = new String[3];
         roomMessage[0] = waitMessage.getUser();
         roomMessage[1] = waitMessage.getHost();
-        if(!waitMessage.isClick()){
+        if(waitMessage.getIsClick().equals("false")){
             roomMessage[2] = ((Integer) gameserver.getRoom().get(waitMessage.getHost()).size()).toString();
             return roomMessage;
         }
@@ -51,7 +58,8 @@ public class GameServerController {
             roomMessage[3] = "false"; // full room
             return roomMessage;
         }
-        gameserver.getRoom().get(joinMessage.getHost()).add(joinMessage.getUsername());
+        gameserver.getRoom().get(joinMessage.getHost()).add(joinMessage.getUser());
+        gameserver.getNamePlayer().get(joinMessage.getHost()).add(joinMessage.getUsername());
         roomMessage[3] = gameserver.getConfig().get(joinMessage.getHost())[2].toString();
         return roomMessage;
     }
@@ -66,8 +74,11 @@ public class GameServerController {
         if(gameserver.getRoom().containsKey(hostMessage.getHost())) return roomMessage;
         Long[] configs = new Long[12];
         ArrayList<String> players = new ArrayList<>();
-        players.add(hostMessage.getUsername());
+        ArrayList<String> playerNames = new ArrayList<>();
+        players.add(hostMessage.getUser());
+        playerNames.add(hostMessage.getUsername());
         gameserver.getRoom().put(hostMessage.getHost(),players);
+        gameserver.getNamePlayer().put(hostMessage.getHost(),playerNames);
         roomMessage[2] = "false"; // isn't used
         configs[0] = Long.parseLong(hostMessage.getM());
         configs[1] = Long.parseLong(hostMessage.getN());
