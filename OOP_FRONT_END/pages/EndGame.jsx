@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 
-export default function EndGame({ isWin }) {
+export default function EndGame(props) {
   const [countdown, setCountdown] = useState(20);
 
   //   useEffect(() => {
@@ -32,7 +32,7 @@ export default function EndGame({ isWin }) {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        height: "240px",
+        height: "480px",
         width: "800px",
         marginLeft: "0px",
         marginTop: "0px",
@@ -42,10 +42,16 @@ export default function EndGame({ isWin }) {
         {isWin ? "🎉YOU WIN🎉" : "💥YOU LOSE💥"}
       </h1> */}
 
-      {isWin ? (
-        <h1 style={{ fontSize: "100px", color: "#03fc6f" }}>🎉YOU WIN🎉</h1>
+      {props.isWin ? (
+        <div>
+          <h1 style={{ fontSize: "100px", color: "#03fc6f" }}>🎉YOU WIN🎉</h1>
+          <h1 style={{ fontSize: "100px", color: props.winnerColor }}>{props.winnerName} WIN</h1>
+        </div>
       ) : (
-        <h1 style={{ fontSize: "100px", color: "#fc0303" }}>💥YOU LOSE💥</h1>
+        <div>
+          <h1 style={{ fontSize: "100px", color: "#fc0303" }}>💥YOU LOSE💥</h1>
+          <h1 style={{ fontSize: "100px", color: props.winnerColor }}>{props.winnerName} WIN</h1>
+        </div>
       )}
       <h3 style={{ color: "#fcad03" }}>Redirected back in {countdown}...</h3>
     </div>

@@ -7,38 +7,17 @@ import Link from "next/link";
 import EndGame from "./EndGame";
 import { Client } from "@stomp/stompjs";
 
-const url = "ws://10.83.245.232:8080/project";
-let client;
 /*import "./components/hexagon.css";*/
+const playerColor = ["red","blue","green","yellow","orange"];
 
-export default function UPBEAT() {
+export default function UPBEAT(props) {
   const [content, setContent] = useState("");
   const [Text, setText] = useState([]);
-  const [showEnd, setShowEnd] = useState(false);
-  const [isWin, setIsWin] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setIsWin(Math.random() < 0.5 ? false : true); // set isWin to true after 20 seconds
-      setShowEnd(true); // show popup after 20 seconds
-    }, 20000);
-    return () => clearTimeout(timeoutId); // clear timeout when component is unmounted
-  }, []);
-
-  /*useEffect(() => {
-    if (!client) {
-      client = new Client({
-        brokerURL: url,
-        onConnect: () => {
-          client.subscribe("/app/game");
-          client.subscribe("/topic/game");
-        },
-      });
-
-      client.activate();
-    }
-  }, []);*/
-
+  let client = props.user;
+  
   function handleText(event) {
     setContent(event.target.value);
     setText(event.target.value.split("\n"));
@@ -47,6 +26,45 @@ export default function UPBEAT() {
     // setText(newLines);
     //setText(event.target.value);
   }
+
+  const handleClick = () => {
+    if (client) {
+      if (client.connected) {
+        if(props.isMyTurn){
+          client.publish({
+            destination: "/app/game/plan",
+            body: JSON.stringify({
+              user: props.username,
+              host: props.host,
+              playerNum: props.playerNum,
+              isRev: props.turn === 1 || !isEdit ? "false" : "true",
+              cons_plan: content,
+            }),
+          });
+          setIsEdit(false);
+          setCanEdit(false);
+        }
+      }
+    }
+  };
+
+  const handleEdit = () => {
+    if(props.budget >= props.revCost){
+      setIsEdit(true);
+      setCanEdit(true);
+    }else{
+      alert("Not enough budget!!!");
+    }
+  }
+
+  /*useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsWin(Math.random() < 0.5 ? false : true); // set isWin to true after 20 seconds
+      setShowEnd(true); // show popup after 20 seconds
+    }, 20000);
+    return () => clearTimeout(timeoutId); // clear timeout when component is unmounted
+  }, []);*/
+
   // useEffect(() => {
   //   const searchParams = new URLSearchParams(window.location.search);
   //   //setSelectedRow(searchParams.get("Row"));
@@ -66,8 +84,8 @@ export default function UPBEAT() {
 
   return (
     <div id="UPBEAT">
-      {showEnd && <EndGame isWin={isWin} />}
-      {!showEnd && (
+      {props.gameOver && <EndGame isWin={!props.lost} winnerName={props.winnerName} winnerColor={props.winnerNum !== 0 ? playerColor[props.winnerNum-1] : "white"}/>}
+      {!props.gameOver && (
         //<Navbar id="NavBar" key="UPBEAT" link="UPBEAT" />
         <div id="EntireSpace" class="mx-5 py-4">
           <div
@@ -105,7 +123,7 @@ export default function UPBEAT() {
                     style={{
                       color: "#fcad03",
                       fontFamily: "Lato",
-                      background: "#570273", //change with player assign colour
+                      background: playerColor[props.playerTurn-1], //change with player assign colour
                       marginTop: "0px",
                       marginRight: "20px",
                       width: "180px",
@@ -116,12 +134,12 @@ export default function UPBEAT() {
                     }}
                   >
                     {" "}
-                    <strong>Player's</strong> turn
+                    <strong>{props.playerTurnName}</strong> turn
                   </h4>
                 </div>
 
                 <div style={{ marginTop: "50px" }}>
-                  <Hexagon />
+                  <Hexagon row={props.row} col={props.col} regionSet={props.regionSet} playerColor={playerColor[props.playerNum-1]} lost={props.lost}></Hexagon>
                 </div>
               </div>
 
@@ -146,10 +164,11 @@ export default function UPBEAT() {
                     }}
                   >
                     {" "}
-                    Budget : <strong>1000000</strong>
+                    Budget : <strong>{props.budget}</strong>
                   </h4>
                   <h3 style={{ fontFamily: "Lato", color: "#fcad03" }}>
                     {" "}
+                    {props.turn === 1 ? "INITIAL " : ""}
                     CONSTRUCTION PLAN
                   </h3>
 
@@ -163,14 +182,11 @@ export default function UPBEAT() {
                     }}
                     placeholder="Tips : Remember! Peace was never an option"
                     required
+                    disabled={(props.isMyTurn && canEdit) || (props.isMyTurn && props.turn === 1) ? false : true}
                   ></textarea>
                   <div>
-                    <a
-                      href="about:blank"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span
+                    { props.turn !== 1 ?
+                      <button
                         class="border-0 rounded-3 py-1 px-3 p-3"
                         style={{
                           color: "#fcad03",
@@ -178,46 +194,24 @@ export default function UPBEAT() {
                           background: "#570273",
                           marginRight: "20px",
                         }}
+                        onClick={handleEdit}
+                        disabled={props.isMyTurn ? false : true}
                       >
-                        EDIT
-                      </span>
-                      <i></i>
-                    </a>
-                    <Link
-                      href="/UPBEAT"
-                      //as={useRouter().asPath}
-                    >
-                      <a>
-                        <span
-                          class="border-0 rounded-3 py-1 px-3 p-3"
-                          style={{
-                            color: "#5e1702",
-                            fontFamily: "Lato",
-                            background: "#fcad03",
-                          }}
-                        >
-                          DONE
-                        </span>
-                        <i></i>
-                      </a>
-                    </Link>
-                    {/* <a
-                    href="about:blank"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span
+                        EDIT {"(cost "+props.revCost+")"} 
+                      </button> : <i></i>
+                    }
+                    <button
                       class="border-0 rounded-3 py-1 px-3 p-3"
                       style={{
                         color: "#5e1702",
                         fontFamily: "Lato",
                         background: "#fcad03",
                       }}
+                      onClick={handleClick}
+                      disabled={props.isMyTurn ? false : true}
                     >
                       DONE
-                    </span>
-                    <i></i>
-                  </a> */}
+                    </button>
                   </div>
                 </div>
               </div>

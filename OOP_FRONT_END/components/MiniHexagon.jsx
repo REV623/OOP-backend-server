@@ -25,18 +25,19 @@ const HexagonText = styled.div`
     props.isVisible && props.isClicked ? "visible" : "hidden"};
 `;
 
-const MiniHexagon = ({ width, text, backgroundColor, changeColor }) => {
+const MiniHexagon = ({ width, text, backgroundColor, row, col, deposit }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
   const handleClick = () => {
-    setIsClicked(true);
+    if(backgroundColor !== "white")
+      alert(`Region (${row},${col}) : Deposit = ${deposit}`);
   };
 
   return (
     <HexagonWrapper
       width={width}
-      backgroundColor={isClicked ? changeColor : backgroundColor}
+      backgroundColor={backgroundColor}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

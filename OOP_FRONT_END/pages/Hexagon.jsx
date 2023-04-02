@@ -3,14 +3,24 @@ import Region from "../public/Region.png";
 import CityCenter from "../public/CityCenter.png";
 import City from "../public/City.png";
 import MiniHexagon from "../components/MiniHexagon";
-export default function Hexagon() {
-  let row = 16; //16
-  let column = 16; //16
+export default function Hexagon(props) {
+  let row = props.row;
+  let column = props.col;
+  let regionSet = props.regionSet;
   const BigRegions = [];
-  const centerC = 2;
-  const centerR = 5;
-  const C = 2;
-  const R = 4;
+
+  var ownerRegion = new Array(row);
+  for(let i=0 ; i<row ; i++){
+    ownerRegion[i] = new Array(column);
+    for(let j=0 ; j<column ; j++){
+      ownerRegion[i][j] = -1;
+    }
+  }
+  if(!props.lost){
+    for(let i=1 ; i<regionSet.length ; i+=3){
+      ownerRegion[parseInt(regionSet[i])-1][parseInt(regionSet[i+1])-1] = parseInt(regionSet[i+2]);
+    }
+  }
 
   const [hoveredHex, setHoveredHex] = useState(null);
   const [clickedHex, setClickedHex] = useState(null);
@@ -28,12 +38,9 @@ export default function Hexagon() {
     });
   };
 
-  //max 16*16
-  //min 9*9
-  if (row > 16) row = 16;
-  else if (row < 9) row = 9;
-  if (column > 16) column = 16;
-  else if (column < 9) column = 9;
+  function findregion(row,col){
+
+  }
 
   //keep picture hexagon(region) in array
   for (let i = 0; i < row; i++) {
@@ -78,8 +85,10 @@ export default function Hexagon() {
                   key={`${rowIndex},${colIndex}`}
                   id={`${rowIndex},${colIndex}`}
                   width="50px"
-                  backgroundColor="white"
-                  changeColor="green"
+                  row={rowIndex+1}
+                  col={colIndex+1}
+                  deposit={ownerRegion[rowIndex][colIndex]}
+                  backgroundColor={ownerRegion[rowIndex][colIndex]>0 ? props.playerColor : "white"}
                   text="69" /*"69"*/
                 />
               </div>
@@ -89,8 +98,10 @@ export default function Hexagon() {
                   key={`${rowIndex},${colIndex}`}
                   id={`${rowIndex},${colIndex}`}
                   width="50px"
-                  backgroundColor="white"
-                  changeColor="green"
+                  row={rowIndex+1}
+                  col={colIndex+1}
+                  deposit={ownerRegion[rowIndex][colIndex]}
+                  backgroundColor={ownerRegion[rowIndex][colIndex]>0 ? props.playerColor : "white"}
                   text="420" /*"420"*/
                 />
               </div>

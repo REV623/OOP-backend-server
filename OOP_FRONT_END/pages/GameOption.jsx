@@ -12,11 +12,28 @@ let client;
 let username;
 let numPlayer;
 let host;
+let playerNum;
+let playerName;
+let row;
+let col;
+let initPlanMin;
+let initPlanSec;
+let revCost;
+let planError;
+let winnerNum;
+let winnerName;
 
 export default function exp() {
   const [gameState,setGameState] = useState(0);
-  const [gameRoom,setGameRoom] = useState(0);
   const [count, setCount] = useState(0);
+  const [turn, setTurn] = useState(1);
+  const [playerTurn, setPlayerTurn] = useState(1);
+  const [playerTurnName, setPlayerTurnName] = useState("");
+  const [isMyTurn, setIsMyTurn] = useState(false);
+  const [budget, setBudget] = useState(0);
+  const [regionSet, setRegionSet] = useState([]);
+  const [lost, setLost] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   function sendWait(){
     if (client) {
@@ -35,7 +52,68 @@ export default function exp() {
 
   function handleGame(body){
     if(body[0][0] === host){
-      console.log("game1");
+      if(body[0][1] !== "plan" && body[0][1] !== "GameOver"){
+        planError = false;
+        const gameData = body[0][1];
+        const gameDataArr = gameData.split("/");
+        console.log(gameDataArr);
+        setTurn(parseInt(gameDataArr[0]));
+        setPlayerTurn(parseInt(gameDataArr[1]));
+        setPlayerTurnName(body[parseInt(gameDataArr[1])][1]);
+        if(gameDataArr.length !== 2){
+          row = parseInt(gameDataArr[2]);
+          col = parseInt(gameDataArr[3]);
+          initPlanMin = parseInt(gameDataArr[4]);
+          initPlanSec = parseInt(gameDataArr[5]);
+          revCost = parseInt(gameDataArr[6]);
+          for(let i=1 ; i<body.length ; i++){
+            if(body[i][0] === username){
+              playerNum = i;
+              playerName = body[i][1];
+              break;
+            }
+          }
+        }
+        if(body[playerNum][2] !== "lost"){
+          const regionData = body[playerNum][2];
+          const regionDataArr = regionData.split("/");
+          console.log(parseInt(regionDataArr[0]));
+          setBudget(parseInt(regionDataArr[0]));
+          setRegionSet(regionDataArr);
+          if(parseInt(gameDataArr[1]) === playerNum){
+            setIsMyTurn(true);
+          }else{
+            setIsMyTurn(false);
+          }
+        }else{
+          setLost(true);
+          setIsMyTurn(false);
+        }
+      }else if(body[0][1] === "plan"){
+        if(body[1][0] === username){
+          planError = true;
+          alert("Syntax Error : "+body[1][1]);
+        }
+      }else if(body[0][1] === "GameOver"){
+        if(body[playerNum][2] === "lost"){
+          setLost(true);
+          setIsMyTurn(false);
+          winnerNum = 0;
+          winnerName = "NOBODY";
+          for(let i=1 ; i<body.length ; i++){
+            if(body[i][2] === "win"){
+              winnerNum = i;
+              winnerName = body[i][1];
+              break;
+            }
+          }
+        }else{
+          winnerNum = playerNum;
+          winnerName = playerName;
+          setIsMyTurn(false);
+        }
+        setGameOver(true);
+      }
     }
   }
 
@@ -162,6 +240,9 @@ export default function exp() {
   }else if(gameState === 3){
     return (<div><WaitRoom user={client} username={username} host={host} amountPlayer={count} numPlayer={numPlayer}></WaitRoom></div>)
   }else if(gameState === 4){
-    return (<div><UPBEAT></UPBEAT></div>)
+    return (<div><UPBEAT user={client} username={username} host={host} row={row} col={col} initPlanMin={initPlanMin} initPlanSec={initPlanSec}
+      revCost={revCost} planError={planError} turn={turn} isMyTurn={isMyTurn} playerTurnName={playerTurnName} playerTurn={playerTurn}
+      playerName={playerName} playerNum={playerNum} budget={budget} regionSet={regionSet}
+      lost={lost} gameOver={gameOver} winnerName={winnerName} winnerNum={winnerNum}></UPBEAT></div>)
   }
 }

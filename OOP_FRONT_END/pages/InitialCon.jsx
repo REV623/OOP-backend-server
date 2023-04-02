@@ -109,7 +109,7 @@ export default function InitialCon() {
                     as={useRouter().asPath}
                   >
                     <a>
-                      <span
+                      <button
                         class="border-0 rounded-3 py-1 px-3 p-3"
                         style={{
                           color: "#5e1702",
@@ -118,7 +118,7 @@ export default function InitialCon() {
                         }}
                       >
                         DONE
-                      </span>
+                      </button>
                       <i></i>
                     </a>
                   </Link>
