@@ -1,6 +1,8 @@
 package com.example.OOPserver;
 
 import com.example.OOPserver.GameState.Gameserver;
+import com.example.OOPserver.GameState.Player;
+import com.example.OOPserver.GameState.Territory;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -22,6 +24,14 @@ public class GameServerController {
     @SubscribeMapping("/game")
     public String test(){
         return "hello";
+    }
+
+    @MessageMapping("/game/plan")
+    @SendTo("/topic/game")
+    public String[][] game(PlanMessage planMessage){
+        return gameserver.sendConsPlan(planMessage.getHost(),
+                Integer.parseInt(planMessage.getPlayerNum()),
+                planMessage.getCons_plan(), planMessage.getIsRev());
     }
 
     @MessageMapping("/game/new")

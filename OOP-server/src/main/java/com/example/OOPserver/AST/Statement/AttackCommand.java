@@ -33,7 +33,7 @@ public class AttackCommand implements Statement {
         Region target = player.cityCrew.gotoDirection(this.direction);
         if(target.owner == null) return true;
         target.subDeposit(attackCost);
-        if(target.getDeposit() < 1) target.loseRegion(player);
+        if(target.getDeposit() < 1) target.loseRegion(target.owner);
         return true;
     }
 }

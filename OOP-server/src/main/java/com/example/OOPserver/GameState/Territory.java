@@ -76,9 +76,21 @@ public class Territory {
 
     public void updatePlayerTurn(){
         playerSet[playerTurn].evaluatePlan();
-        playerTurn = (playerTurn + 1) % playerSet.length; // update next player turn
-        if(playerTurn == 0) turn++;
+        while(true){
+            if(isGameOver()) return;
+            playerTurn = (playerTurn + 1) % playerSet.length; // update next player turn
+            if (playerTurn == 0) turn++;
+            if(!playerSet[playerTurn].GAMEOVER()) break;
+        }
         calculateInterest(playerSet[playerTurn]); // calculate next player
+    }
+
+    public boolean isGameOver(){
+        int numOfPlayer = playerSet.length;
+        for(Player player : playerSet){
+            if(player.GAMEOVER()) numOfPlayer--;
+        }
+        return numOfPlayer <= 1;
     }
 
     public void calculateInterest(Player player){
@@ -87,12 +99,28 @@ public class Territory {
         }
     }
 
+    public int getPlayerTurn(){
+        return playerTurn;
+    }
+
     public long TERRITORY_ROW(){
         return TERRITORY_ROW;
     }
 
     public long TERRITORY_COL(){
         return TERRITORY_COL;
+    }
+
+    public long INIT_PLAN_MIN(){
+        return INIT_PLAN_MIN;
+    }
+
+    public long INIT_PLAN_SEC(){
+        return INIT_PLAN_SEC;
+    }
+
+    public long REVISION_COST(){
+        return REVISION_COST;
     }
 
     public long FEE_CHARGE(){

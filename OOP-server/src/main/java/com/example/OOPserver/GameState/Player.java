@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class Player {
     public String playerName;
+    private boolean gameover = false;
     private Territory territory;
     private Plan construction_Plan;
     public final Map<String, Double> variableSet;
@@ -57,6 +58,10 @@ public class Player {
         budget = Math.max(0,budget-n);
     }
 
+    public boolean GAMEOVER(){
+        return gameover;
+    }
+
     public String setConstruction_Plan(String plan){
         try {
             Tokenizer t = new Tokenizer(plan);
@@ -79,10 +84,6 @@ public class Player {
         for(Region region : regionSet)
             region.owner = null;
         regionSet.clear();
-    }
-
-    public void calculateDeposit(){
-        for(Region region : regionSet)
-            region.calculateInterest();
+        gameover = true;
     }
 }
