@@ -21,11 +21,10 @@ const HexagonText = styled.div`
   font-size: 20px;
   font-weight: bold;
   color: white;
-  visibility: ${(props) =>
-    props.isVisible && props.isClicked ? "visible" : "hidden"};
+  visibility: "visible";
 `;
 
-const MiniHexagon = ({ width, text, backgroundColor, row, col, deposit }) => {
+const MiniHexagon = ({ width, text, backgroundColor, isCityCenter, row, col, deposit }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -42,8 +41,8 @@ const MiniHexagon = ({ width, text, backgroundColor, row, col, deposit }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <HexagonText isVisible={isHovered} isClicked={isClicked}>
-        {isClicked ? text : ""}
+      <HexagonText>
+        {isCityCenter ? "C" : ""}
       </HexagonText>
     </HexagonWrapper>
   );

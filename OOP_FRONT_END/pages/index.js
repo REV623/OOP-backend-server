@@ -11,8 +11,6 @@ export default function Home() {
 
   return (
     <div>
-        <Navbar key="index" link="index" />
-
         <div className="m-5 mt-0 py-4">
           <div className="mx-4 my-4 vstack d-flex justify-content-center">
             <div className="m-3 mt-5">
@@ -31,7 +29,7 @@ export default function Home() {
             </a>
 
             <a
-              href="https://www.example.com"
+              href="https://docs.google.com/document/d/178zlqZoyArUVYOj2J9ZbJuMi6aIJDD7tY7OyVKaqOsU/edit?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginBottom: "20px" }}
@@ -45,7 +43,7 @@ export default function Home() {
             </a>
 
             <a
-              href="https://www.example.com"
+              href="https://github.com/OblivionBoss/261200-Project"
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginBottom: "20px" }}

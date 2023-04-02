@@ -82,26 +82,6 @@ export default function Navbar(props) {
             </a>
           </Link>
         </span>
-        <span>
-          <Link href="/UPBEAT">
-            <a
-              className="border-0 rounded-3 py-1 px-3"
-              style={
-                props.link === "UPBEAT"
-                  ? isUPBEATHover
-                    ? navButtonShownHover
-                    : navButtonShown
-                  : isUPBEATHover
-                  ? navButtonHover
-                  : navButton
-              }
-              onMouseEnter={() => setUPBEATHover(true)}
-              onMouseLeave={() => setUPBEATHover(false)}
-            >
-              UPBEAT
-            </a>
-          </Link>
-        </span>
       </div>
     </div>
   );

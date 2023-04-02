@@ -66,6 +66,10 @@ public class Gameserver {
                 if (!upbeat.playerSet[i].GAMEOVER()) {
                     StringBuilder playerData = new StringBuilder();
                     playerData.append(Math.round(Math.floor(upbeat.playerSet[i].getBudget())));
+                    playerData.append("/");
+                    playerData.append(upbeat.playerSet[i].cityCenter.getRow());
+                    playerData.append("/");
+                    playerData.append(upbeat.playerSet[i].cityCenter.getCol());
                     for (Region region : upbeat.playerSet[i].regionSet) {
                         playerData.append("/");
                         playerData.append(region.getRow());

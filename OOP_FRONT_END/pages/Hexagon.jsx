@@ -17,7 +17,7 @@ export default function Hexagon(props) {
     }
   }
   if(!props.lost){
-    for(let i=1 ; i<regionSet.length ; i+=3){
+    for(let i=3 ; i<regionSet.length ; i+=3){
       ownerRegion[parseInt(regionSet[i])-1][parseInt(regionSet[i+1])-1] = parseInt(regionSet[i+2]);
     }
   }
@@ -85,6 +85,7 @@ export default function Hexagon(props) {
                   key={`${rowIndex},${colIndex}`}
                   id={`${rowIndex},${colIndex}`}
                   width="50px"
+                  isCityCenter={rowIndex+1 === props.citycenterRow && colIndex+1 === props.citycenterCol}
                   row={rowIndex+1}
                   col={colIndex+1}
                   deposit={ownerRegion[rowIndex][colIndex]}
@@ -98,6 +99,7 @@ export default function Hexagon(props) {
                   key={`${rowIndex},${colIndex}`}
                   id={`${rowIndex},${colIndex}`}
                   width="50px"
+                  isCityCenter={rowIndex+1 === props.citycenterRow && colIndex+1 === props.citycenterCol}
                   row={rowIndex+1}
                   col={colIndex+1}
                   deposit={ownerRegion[rowIndex][colIndex]}

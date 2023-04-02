@@ -31,6 +31,8 @@ export default function exp() {
   const [playerTurnName, setPlayerTurnName] = useState("");
   const [isMyTurn, setIsMyTurn] = useState(false);
   const [budget, setBudget] = useState(0);
+  const [citycenterRow, setCitycenterRow] = useState(0);
+  const [citycenterCol, setCitycenterCol] = useState(0);
   const [regionSet, setRegionSet] = useState([]);
   const [lost, setLost] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -56,7 +58,6 @@ export default function exp() {
         planError = false;
         const gameData = body[0][1];
         const gameDataArr = gameData.split("/");
-        console.log(gameDataArr);
         setTurn(parseInt(gameDataArr[0]));
         setPlayerTurn(parseInt(gameDataArr[1]));
         setPlayerTurnName(body[parseInt(gameDataArr[1])][1]);
@@ -77,8 +78,9 @@ export default function exp() {
         if(body[playerNum][2] !== "lost"){
           const regionData = body[playerNum][2];
           const regionDataArr = regionData.split("/");
-          console.log(parseInt(regionDataArr[0]));
           setBudget(parseInt(regionDataArr[0]));
+          setCitycenterRow(parseInt(regionDataArr[1]));
+          setCitycenterCol(parseInt(regionDataArr[2]));
           setRegionSet(regionDataArr);
           if(parseInt(gameDataArr[1]) === playerNum){
             setIsMyTurn(true);
@@ -120,14 +122,12 @@ export default function exp() {
   function handleHost(body){
     if(body[0] === username){
       if(body[2] === "false"){
-        console.log("host1");
         host = body[1];
         numPlayer = body[3];
         setGameState(3);
         sendWait();
       }else{
         alert("Room name is duplicate!");
-        console.log("host2");
       }
     }
   }
@@ -138,7 +138,6 @@ export default function exp() {
         if(body[3] === "false"){
           alert("Room is full!");
         }else{
-          console.log("join1");
           host = body[1];
           numPlayer = body[3];
           setGameState(3);
@@ -146,7 +145,6 @@ export default function exp() {
         }
       }else{
         alert("Room name not found!");
-        console.log("join2");
       }
     }
   }
@@ -154,10 +152,8 @@ export default function exp() {
   function handleWait(body){
     if(body[1] === host){
       if(body[2] === "true"){
-        console.log("wait1");
         setGameState(4);
       }else{
-        console.log("wait2");
         setCount(body[2]);
         setGameState(3);
       }
@@ -167,27 +163,22 @@ export default function exp() {
   useEffect(() => {
     if (!client) {
       username = Math.floor(Math.random()*16777215).toString(16)+Math.floor(Math.random()*16777215).toString(16);
-      console.log(username);
       client = new Client({
         brokerURL: url,
         onConnect: () => {
           client.subscribe("/topic/game", (message) => {
-            console.log(message.body);
             const body = JSON.parse(message.body);
             handleGame(body);
           });
           client.subscribe("/topic/host", (message) => {
-            console.log(message.body);
             const body = JSON.parse(message.body);
             handleHost(body);
           });
           client.subscribe("/topic/join", (message) => {
-            console.log(message.body);
             const body = JSON.parse(message.body);
             handleJoin(body);
           });
           client.subscribe("/topic/wait", (message) => {
-            console.log(message.body);
             const body = JSON.parse(message.body);
             handleWait(body);
           });
@@ -200,7 +191,6 @@ export default function exp() {
   if(gameState === 0){
     return (
       <div>
-        <Navbar key="GameOption" link="GameOption" />
         <div class="m-5 mt-0 py-4">
           <div
             style={{ alignContent: "center" }}
@@ -242,7 +232,7 @@ export default function exp() {
   }else if(gameState === 4){
     return (<div><UPBEAT user={client} username={username} host={host} row={row} col={col} initPlanMin={initPlanMin} initPlanSec={initPlanSec}
       revCost={revCost} planError={planError} turn={turn} isMyTurn={isMyTurn} playerTurnName={playerTurnName} playerTurn={playerTurn}
-      playerName={playerName} playerNum={playerNum} budget={budget} regionSet={regionSet}
+      playerName={playerName} playerNum={playerNum} budget={budget} regionSet={regionSet} citycenterRow={citycenterRow} citycenterCol={citycenterCol}
       lost={lost} gameOver={gameOver} winnerName={winnerName} winnerNum={winnerNum}></UPBEAT></div>)
   }
 }

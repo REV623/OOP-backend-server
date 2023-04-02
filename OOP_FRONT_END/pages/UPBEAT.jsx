@@ -139,7 +139,8 @@ export default function UPBEAT(props) {
                 </div>
 
                 <div style={{ marginTop: "50px" }}>
-                  <Hexagon row={props.row} col={props.col} regionSet={props.regionSet} playerColor={playerColor[props.playerNum-1]} lost={props.lost}></Hexagon>
+                  <Hexagon row={props.row} col={props.col} citycenterRow={props.citycenterRow} citycenterCol={props.citycenterCol}
+                   regionSet={props.regionSet} playerColor={playerColor[props.playerNum-1]} lost={props.lost}></Hexagon>
                 </div>
               </div>
 
